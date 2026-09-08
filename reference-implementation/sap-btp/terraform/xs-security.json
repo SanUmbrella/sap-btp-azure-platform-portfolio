@@ -1,0 +1,19 @@
+{
+  "xsappname": "platform-probe-${space}",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.Read",
+      "description": "Read access for the platform probe backend"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "Viewer",
+      "description": "Viewer role for the platform probe backend",
+      "scope-references": [
+        "$XSAPPNAME.Read"
+      ]
+    }
+  ]
+}

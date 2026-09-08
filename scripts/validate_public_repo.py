@@ -9,9 +9,11 @@ external service or heavyweight dependency.
 from __future__ import annotations
 
 import os
+import json
 import re
 import subprocess
 import sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
@@ -26,6 +28,7 @@ TEXT_EXTENSIONS = {
     ".json",
     ".svg",
     ".py",
+    ".hcl",
     ".gitignore",
 }
 
@@ -152,6 +155,17 @@ def scan_text(path: Path) -> list[str]:
     return findings
 
 
+def parse_structured_file(path: Path) -> list[str]:
+    try:
+        if path.suffix.lower() == ".json":
+            json.loads(path.read_text(encoding="utf-8"))
+        elif path.suffix.lower() == ".svg":
+            ET.parse(path)
+    except Exception as exc:  # noqa: BLE001 - report parse failures uniformly.
+        return [f"{path.relative_to(ROOT)}: parse failed: {exc}"]
+    return []
+
+
 def main() -> int:
     failures: list[str] = []
 
@@ -165,6 +179,7 @@ def main() -> int:
             continue
         if is_text_file(path):
             failures.extend(scan_text(path))
+            failures.extend(parse_structured_file(path))
 
     if failures:
         print("Public repository validation failed:")

@@ -26,7 +26,12 @@ This page separates verified implementation results from partial automation and 
 | Terraform | MinIO remote state | ✅ Verified |
 | Lifecycle | Azure destroy | ✅ Verified |
 | Lifecycle | Azure rebuild | ✅ Verified |
+| IaC adoption | Manual-to-Terraform migration analysis | ✅ Verified |
+| IaC adoption | XSUAA broker/API read-back limitation documented | ✅ Verified |
+| IaC adoption | Role collection assignment controlled migration | ✅ Verified |
+| IaC adoption | Stable route migration | ✅ Verified |
 | Automation | Workload post-deployment automation | 🟡 Partial |
+| Upstream | Cloud Foundry provider minimal reproducer | 🔵 Planned |
 | Future work | Reverse AKS -> BTP | 🔵 Planned |
 | Future work | Private-AKS SAP Cloud Connector architecture | 🔵 Planned |
 | Future work | Kustomize migration | 🔵 Planned |

@@ -16,9 +16,9 @@ resource "btp_subaccount_destination_generic" "aks_probe" {
   type          = "HTTP"
 
   properties = {
-    URL               = var.remote_url
-    ProxyType         = "Internet"
-    Authentication    = "NoAuthentication"
+    URL                        = var.remote_url
+    ProxyType                  = "Internet"
+    Authentication             = "NoAuthentication"
     "HTML5.DynamicDestination" = "true"
   }
 }

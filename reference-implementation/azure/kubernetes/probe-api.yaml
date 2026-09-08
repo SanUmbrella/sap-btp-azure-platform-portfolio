@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aks-probe-api
+  namespace: platform-lab
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: aks-probe-api
+  template:
+    metadata:
+      labels:
+        app: aks-probe-api
+        azure.workload.identity/use: "true"
+    spec:
+      serviceAccountName: aks-probe-api
+      containers:
+        - name: api
+          image: "<acr-login-server>/aks-probe-api:<image-tag>"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KEY_VAULT_URL
+              value: "https://<key-vault-name>.vault.azure.net/"
+            - name: SECRET_NAME
+              value: "probe-verification"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aks-probe-api
+  namespace: platform-lab
+spec:
+  type: ClusterIP
+  selector:
+    app: aks-probe-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
