@@ -32,12 +32,16 @@ resource "azurerm_user_assigned_identity" "aks_probe" {
 }
 
 resource "azurerm_federated_identity_credential" "aks_probe" {
-  name                = "aks-probe-serviceaccount"
-  resource_group_name = var.resource_group_name
-  parent_id           = azurerm_user_assigned_identity.aks_probe.id
-  issuer              = var.oidc_issuer_url
-  audience            = ["api://AzureADTokenExchange"]
-  subject             = "system:serviceaccount:${var.namespace}:${var.service_account_name}"
+  name = "fic-aks-probe"
+
+  user_assigned_identity_id = azurerm_user_assigned_identity.aks_probe.id
+
+  audience = [
+    "api://AzureADTokenExchange"
+  ]
+
+  issuer  = var.oidc_issuer_url
+  subject = "system:serviceaccount:${var.namespace}:${var.service_account_name}"
 }
 
 resource "azurerm_role_assignment" "key_vault_reader" {

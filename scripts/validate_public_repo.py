@@ -28,7 +28,12 @@ TEXT_EXTENSIONS = {
     ".json",
     ".svg",
     ".py",
+    ".sh",
+    ".go",
+    ".mod",
+    ".sum",
     ".hcl",
+    ".tmpl",
     ".gitignore",
 }
 
@@ -63,6 +68,10 @@ SAFE_EXAMPLE_LITERALS = {
     "${NAMESPACE}",
     "${SERVICE_ACCOUNT_NAME}",
     "${REMOTE_URL}",
+}
+
+TEXT_FILENAMES = {
+    "Dockerfile",
 }
 
 
@@ -120,9 +129,21 @@ def tracked_files() -> list[Path]:
 
 
 def is_text_file(path: Path) -> bool:
+    if path.name in TEXT_FILENAMES:
+        return True
     if path.name == ".gitignore":
         return True
     return path.suffix.lower() in TEXT_EXTENSIONS
+
+
+def binary_file_reason(path: Path) -> str | None:
+    try:
+        header = path.read_bytes()[:4]
+    except OSError:
+        return None
+    if header == b"\x7fELF":
+        return "compiled ELF binary is not allowed"
+    return None
 
 
 def forbidden_path_reason(path: Path) -> str | None:
@@ -173,6 +194,10 @@ def main() -> int:
         if not path.is_file():
             continue
         relative = path.relative_to(ROOT)
+        binary_reason = binary_file_reason(path)
+        if binary_reason:
+            failures.append(f"{relative}: {binary_reason}")
+            continue
         reason = forbidden_path_reason(path)
         if reason:
             failures.append(f"{relative}: {reason}")

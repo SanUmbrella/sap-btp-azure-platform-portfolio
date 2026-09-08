@@ -8,11 +8,6 @@ variable "btp_subaccount_id" {
   type        = string
 }
 
-variable "cf_api_url" {
-  description = "Cloud Foundry API endpoint, for example an SAP public CF API endpoint."
-  type        = string
-}
-
 variable "cf_org_name" {
   description = "Cloud Foundry org name supplied outside this public repository."
   type        = string

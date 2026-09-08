@@ -1,25 +1,11 @@
 {
-  "welcomeFile": "/",
   "authenticationMethod": "route",
   "routes": [
     {
-      "source": "^/$",
-      "target": "/health",
-      "destination": "backend",
-      "authenticationType": "xsuaa"
-    },
-    {
-      "source": "^/api/(.*)$",
+      "source": "^/(.*)$",
       "target": "/$1",
-      "destination": "backend",
-      "authenticationType": "xsuaa",
-      "scope": "$XSAPPNAME.Read"
-    },
-    {
-      "source": "^/health$",
-      "target": "/health",
-      "destination": "backend",
-      "authenticationType": "none"
+      "destination": "hello-backend",
+      "authenticationType": "xsuaa"
     }
   ]
 }

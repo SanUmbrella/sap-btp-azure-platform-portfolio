@@ -5,20 +5,19 @@ variable "btp_subaccount_id" {
   type        = string
 }
 
-variable "remote_url" {
+variable "aks_probe_url" {
   description = "Remote HTTPS endpoint supplied outside this public example."
   type        = string
 }
 
 resource "btp_subaccount_destination_generic" "aks_probe" {
   subaccount_id = var.btp_subaccount_id
-  name          = "AKS_PROBE_API"
-  type          = "HTTP"
 
-  properties = {
-    URL                        = var.remote_url
-    ProxyType                  = "Internet"
-    Authentication             = "NoAuthentication"
-    "HTML5.DynamicDestination" = "true"
-  }
+  destination_configuration = jsonencode({
+    Name           = "aks-probe-api"
+    Type           = "HTTP"
+    ProxyType      = "Internet"
+    URL            = var.aks_probe_url
+    Authentication = "NoAuthentication"
+  })
 }

@@ -1,18 +1,35 @@
 {
-  "xsappname": "platform-probe-${space}",
+  "xsappname": "sap-btp-platform-probe",
   "tenant-mode": "dedicated",
+  "oauth2-configuration": {
+    "credential-types": [
+      "binding-secret"
+    ],
+    "redirect-uris": [
+      "${approuter_route}"
+    ]
+  },
   "scopes": [
     {
       "name": "$XSAPPNAME.Read",
-      "description": "Read access for the platform probe backend"
+      "description": "Read access to the protected platform probe API"
     }
   ],
   "role-templates": [
     {
       "name": "Viewer",
-      "description": "Viewer role for the platform probe backend",
+      "description": "Allows read access to the protected platform probe API",
       "scope-references": [
         "$XSAPPNAME.Read"
+      ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "SAP BTP Platform Probe Viewer",
+      "description": "Viewer access for the SAP BTP Cloud Foundry lab",
+      "role-template-references": [
+        "$XSAPPNAME.Viewer"
       ]
     }
   ]

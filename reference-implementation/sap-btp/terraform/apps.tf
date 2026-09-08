@@ -1,33 +1,37 @@
 resource "cloudfoundry_app" "backend" {
-  name       = "platform-probe-backend"
-  space      = data.cloudfoundry_space.selected.id
-  path       = "../app"
-  memory     = 256
-  disk_quota = 512
-  strategy   = "rolling"
+  name       = "sap-btp-platform-probe"
+  org_name   = data.cloudfoundry_org.selected.name
+  space_name = data.cloudfoundry_space.selected.name
+
+  path             = data.archive_file.backend.output_path
+  source_code_hash = data.archive_file.backend.output_base64sha256
+
+  buildpacks        = ["nodejs_buildpack"]
+  command           = "npm start"
+  instances         = 1
+  memory            = "128M"
+  disk_quota        = "1024M"
+  health_check_type = "port"
+  stopped           = false
 
   environment = {
-    AKS_PROBE_DESTINATION = btp_subaccount_destination_generic.aks_probe.name
-    ONPREM_DESTINATION    = btp_subaccount_destination_generic.onprem_mock.name
+    NODE_ENV = "production"
   }
 }
 
 resource "cloudfoundry_app" "approuter" {
-  name       = "platform-probe-approuter"
-  space      = data.cloudfoundry_space.selected.id
-  path       = "../approuter"
-  memory     = 256
-  disk_quota = 512
-  strategy   = "rolling"
+  name       = "sap-btp-platform-probe-approuter"
+  org_name   = data.cloudfoundry_org.selected.name
+  space_name = data.cloudfoundry_space.selected.name
 
-  environment = {
-    destinations = jsonencode([
-      {
-        name             = "backend"
-        url              = "https://${var.backend_host}.${var.cf_domain}"
-        forwardAuthToken = true
-        timeout          = 30000
-      }
-    ])
-  }
+  path             = data.archive_file.approuter.output_path
+  source_code_hash = data.archive_file.approuter.output_base64sha256
+
+  buildpacks        = ["nodejs_buildpack"]
+  command           = "npm start"
+  instances         = 1
+  memory            = "128M"
+  disk_quota        = "1024M"
+  health_check_type = "port"
+  stopped           = false
 }

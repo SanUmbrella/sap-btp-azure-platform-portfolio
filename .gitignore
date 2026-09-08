@@ -23,3 +23,5 @@ dist/
 build/
 __pycache__/
 *.pyc
+*.exe
+reference-implementation/azure/probe-api/aks-probe-api

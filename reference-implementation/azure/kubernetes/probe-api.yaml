@@ -4,7 +4,7 @@ metadata:
   name: aks-probe-api
   namespace: platform-lab
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: aks-probe-api
@@ -14,17 +14,37 @@ spec:
         app: aks-probe-api
         azure.workload.identity/use: "true"
     spec:
-      serviceAccountName: aks-probe-api
+      serviceAccountName: kv-reader
       containers:
-        - name: api
-          image: "<acr-login-server>/aks-probe-api:<image-tag>"
+        - name: aks-probe-api
+          image: "${IMAGE}"
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
           env:
-            - name: KEY_VAULT_URL
-              value: "https://<key-vault-name>.vault.azure.net/"
-            - name: SECRET_NAME
-              value: "probe-verification"
+            - name: KEYVAULT_URL
+              value: "${KEYVAULT_URL}"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+      nodeSelector:
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -38,4 +58,4 @@ spec:
   ports:
     - name: http
       port: 80
-      targetPort: 8080
+      targetPort: http

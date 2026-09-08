@@ -26,7 +26,7 @@ User
 -> Azure Key Vault
 ```
 
-The implementation verified that a request originating through SAP BTP reached the AKS workload and that the AKS workload successfully read from Azure Key Vault.
+The implementation verified that a request originating through SAP BTP reached the AKS workload and that the AKS workload successfully exercised Azure Key Vault data-plane access.
 
 ## Major Boundaries
 

@@ -26,7 +26,7 @@ The repository includes a [sanitized reference implementation](reference-impleme
 | Terraform | Managed Azure and BTP resources with explicit provider boundaries and plan-first changes. | Verified |
 | Azure AKS | Ran the probe API and cloudflared connector replicas. | Verified |
 | Azure Container Registry | Stored the probe API container image used by the AKS workload. | Verified |
-| Azure Key Vault | Served as the protected downstream Azure resource for secret-read verification. | Verified |
+| Azure Key Vault | Served as the protected downstream Azure resource for data-plane access verification. | Verified |
 | Microsoft Entra Workload Identity | Exchanged projected Kubernetes identity tokens for Azure identity access. | Verified |
 | OIDC federation | Linked the AKS ServiceAccount subject to a user-assigned managed identity. | Verified |
 | MinIO remote state | Provided S3-compatible Terraform remote state with credentials kept outside Git. | Verified |
@@ -66,7 +66,7 @@ flowchart LR
   MI --> KV
 ```
 
-The trust transitions are explicit: browser identity is handled by SAP AppRouter and XSUAA; remote endpoint selection is delegated to Destination Service; application inbound connectivity crosses HTTPS and Cloudflare Tunnel; the AKS pod uses a Kubernetes ServiceAccount and OIDC token projection; Microsoft Entra exchanges that token for managed identity access; Azure RBAC authorizes the final Key Vault data-plane read.
+The trust transitions are explicit: browser identity is handled by SAP AppRouter and XSUAA; remote endpoint selection is delegated to Destination Service; application inbound connectivity crosses HTTPS and Cloudflare Tunnel; the AKS pod uses a Kubernetes ServiceAccount and OIDC token projection; Microsoft Entra exchanges that token for managed identity access; Azure RBAC authorizes the final Key Vault data-plane operation.
 
 ## Verified End-to-End Request
 
@@ -183,10 +183,11 @@ The [reference implementation](reference-implementation/README.md) contains sani
 
 | Area | Files |
 | --- | --- |
-| SAP BTP backend | [server.js](reference-implementation/sap-btp/app/server.js), package metadata and XSUAA/Destination handling. |
+| SAP BTP backend | [server.js](reference-implementation/sap-btp/application/server.js), package metadata and XSUAA/Destination handling. |
 | SAP AppRouter | [xs-app.json](reference-implementation/sap-btp/approuter/xs-app.json) and AppRouter package metadata. |
 | SAP Terraform | Cloud Foundry apps, routes, service instances, bindings, destinations, role collection assignment and [xs-security.json](reference-implementation/sap-btp/terraform/xs-security.json). |
 | Azure Terraform | AKS, ACR, Key Vault, managed identity, federated identity credential and RBAC reference configuration. |
+| Azure probe API | [main.go](reference-implementation/azure/probe-api/main.go), Go module metadata and Dockerfile. |
 | Kubernetes | Namespace, ServiceAccount, probe API and cloudflared deployment manifests. |
 
 The older manual `cf push` manifest style is documented only as evolution history because the final implementation used stable Terraform-managed routes and Destination Service.
@@ -206,12 +207,17 @@ See [implementation status](docs/evidence/implementation-status.md) for the deta
 The lab included migration from manual resources into Terraform ownership. The repository documents the important adoption cases instead of hiding them:
 
 - [Terraform adoption](docs/engineering/terraform-adoption.md)
-- [Provider and API limitations](docs/engineering/provider-and-api-limitations.md)
+- [Provider limitations](docs/engineering/provider-limitations.md)
 - [Migration failure analysis](docs/engineering/migration-failure-analysis.md)
 - [Lifecycle workarounds](docs/engineering/lifecycle-workarounds.md)
 - [Upstream opportunities](docs/engineering/upstream-opportunities.md)
+- [Version context](docs/engineering/version-context.md)
 
 Key distinction: XSUAA parameter read-back limitations are documented as broker/API behavior, while Cloud Foundry app/binding replacement behavior is treated as a candidate for minimal upstream reproduction.
+
+## Version Context
+
+The historical lab implementation used Terraform `>= 1.15.0`, `cloudfoundry/cloudfoundry` `1.17.0`, `SAP/btp` `1.25.0`, and `hashicorp/azurerm` `5.2.0`. Public examples preserve those historical provider versions where schema accuracy matters. If a future reproducer is validated against newer provider releases, the documentation should distinguish "originally implemented with" from "currently validated with".
 
 ## Technology Stack
 
@@ -227,7 +233,7 @@ This repository demonstrates cross-cloud platform integration, infrastructure as
 - Architecture: [overview](docs/architecture/platform-overview.md), [end-to-end flow](docs/architecture/end-to-end-flow.md), [identity and secrets](docs/architecture/identity-and-secrets.md), [connectivity patterns](docs/architecture/connectivity-patterns.md), [Terraform state](docs/architecture/terraform-state.md)
 - Platform: [SAP BTP foundation](docs/platform/sap-btp-foundation.md), [Azure AKS foundation](docs/platform/azure-aks-foundation.md), [workload identity](docs/platform/workload-identity.md), [application flow](docs/platform/application-flow.md)
 - Evidence: [implementation status](docs/evidence/implementation-status.md), [end-to-end verification](docs/evidence/end-to-end-verification.md), [lifecycle verification](docs/evidence/lifecycle-verification.md)
-- Engineering: [Terraform adoption](docs/engineering/terraform-adoption.md), [provider/API limitations](docs/engineering/provider-and-api-limitations.md), [migration failure analysis](docs/engineering/migration-failure-analysis.md), [lifecycle workarounds](docs/engineering/lifecycle-workarounds.md), [upstream opportunities](docs/engineering/upstream-opportunities.md)
+- Engineering: [Terraform adoption](docs/engineering/terraform-adoption.md), [provider limitations](docs/engineering/provider-limitations.md), [migration failure analysis](docs/engineering/migration-failure-analysis.md), [lifecycle workarounds](docs/engineering/lifecycle-workarounds.md), [upstream opportunities](docs/engineering/upstream-opportunities.md), [version context](docs/engineering/version-context.md)
 - Evolution: [manual CF push](docs/evolution/01-manual-cf-push.md), [Destination Service](docs/evolution/02-destination-service.md), [Terraform adoption](docs/evolution/03-terraform-adoption.md), [stable routing](docs/evolution/04-stable-routing.md)
 - Operations: [destroy/rebuild](docs/operations/destroy-rebuild.md), [verification runbook](docs/operations/verification-runbook.md), [architecture walkthrough](docs/operations/interview-demo.md)
 - Security: [security model](docs/security/security-model.md), [public repository sanitization](docs/security/public-repository-sanitization.md)

@@ -10,7 +10,7 @@ The Azure platform layer was managed with Terraform and split into long-lived bo
 | AKS | Hosted the probe API and cloudflared connector replicas. |
 | Azure CNI Overlay | Used for AKS networking in the lab. |
 | ACR | Stored the probe API container image. |
-| Key Vault | Protected the secret-read target used for verification. |
+| Key Vault | Protected the data-plane access target used for verification. |
 | User-assigned managed identity | Represented the Azure identity used by the AKS workload. |
 | Federated identity credential | Bound the Kubernetes ServiceAccount subject to Microsoft Entra. |
 | Azure RBAC | Granted narrowly scoped Key Vault data-plane access. |

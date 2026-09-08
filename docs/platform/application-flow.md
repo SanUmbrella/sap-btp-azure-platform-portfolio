@@ -10,12 +10,12 @@ The application flow was designed to prove cross-platform reachability and ident
 4. The backend resolved the remote endpoint through Destination Service.
 5. The backend sent an HTTPS request with a correlation ID.
 6. Cloudflare Tunnel delivered the request to the AKS internal service path.
-7. The AKS probe API used workload identity to access Key Vault.
+7. The AKS probe API used workload identity to verify Key Vault data-plane access.
 8. The probe API returned a sanitized status response.
 
 ## Probe API
 
-The AKS probe API was a small Go HTTP service. It propagated and returned a correlation ID and verified Key Vault access through the configured managed identity.
+The AKS probe API was a small Go HTTP service. It propagated and returned a correlation ID and verified Key Vault secret-metadata access through the configured managed identity.
 
 The response intentionally exposed only operational verification fields:
 

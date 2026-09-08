@@ -37,3 +37,23 @@ resource "cloudfoundry_service_credential_binding" "approuter_xsuaa" {
     ignore_changes = [app]
   }
 }
+
+resource "cloudfoundry_service_credential_binding" "approuter_destination" {
+  type             = "app"
+  service_instance = cloudfoundry_service_instance.destination.id
+  app              = cloudfoundry_app.approuter.id
+
+  lifecycle {
+    ignore_changes = [app]
+  }
+}
+
+resource "cloudfoundry_service_credential_binding" "approuter_connectivity" {
+  type             = "app"
+  service_instance = cloudfoundry_service_instance.connectivity.id
+  app              = cloudfoundry_app.approuter.id
+
+  lifecycle {
+    ignore_changes = [app]
+  }
+}

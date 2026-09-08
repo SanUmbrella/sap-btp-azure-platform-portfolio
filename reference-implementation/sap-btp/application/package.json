@@ -1,0 +1,15 @@
+{
+  "name": "sap-btp-cf-hello",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@sap-cloud-sdk/http-client": "4.9.1",
+    "@sap/xssec": "^4.15.0"
+  }
+}

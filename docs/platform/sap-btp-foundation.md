@@ -22,7 +22,7 @@ SAP BTP resources span account/subaccount concerns and Cloud Foundry runtime con
 
 Existing resources were progressively adopted into Terraform rather than blindly recreated. Provider import and read-back limitations were documented as engineering constraints.
 
-The sanitized reference implementation includes the files that matter for review: [server.js](../../reference-implementation/sap-btp/app/server.js), [xs-app.json](../../reference-implementation/sap-btp/approuter/xs-app.json), [xs-security.json](../../reference-implementation/sap-btp/terraform/xs-security.json), and Terraform resources for apps, services, routes, bindings, destinations and role assignment.
+The sanitized reference implementation includes the files that matter for review: [server.js](../../reference-implementation/sap-btp/application/server.js), [xs-app.json](../../reference-implementation/sap-btp/approuter/xs-app.json), [xs-security.json](../../reference-implementation/sap-btp/terraform/xs-security.json), and Terraform resources for apps, services, routes, bindings, destinations and role assignment.
 
 ## References
 

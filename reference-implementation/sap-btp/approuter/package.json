@@ -1,16 +1,14 @@
 {
-  "name": "sap-btp-platform-probe-approuter",
-  "version": "0.1.0",
+  "name": "sap-btp-cf-hello-approuter",
+  "version": "1.0.0",
   "private": true,
-  "description": "Sanitized SAP AppRouter reference for the platform probe backend.",
-  "license": "MIT",
   "scripts": {
     "start": "node node_modules/@sap/approuter/approuter.js"
   },
-  "engines": {
-    "node": ">=20"
-  },
   "dependencies": {
-    "@sap/approuter": "^18.0.0"
+    "@sap/approuter": "23.0.0"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }

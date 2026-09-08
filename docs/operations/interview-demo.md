@@ -4,7 +4,7 @@ This page helps an engineer explain the project quickly in a portfolio review or
 
 ## 30-Second Version
 
-This project documents a verified SAP BTP and Azure platform lab with a sanitized reference implementation. A SAP BTP Cloud Foundry application authenticated through AppRouter and XSUAA, resolved a remote endpoint through Destination Service, called an AKS-hosted Go probe API through Cloudflare Tunnel, and the AKS workload read from Azure Key Vault using Microsoft Entra Workload Identity. Terraform managed the platform lifecycle, and the disposable Azure lab was destroyed and rebuilt successfully.
+This project documents a verified SAP BTP and Azure platform lab with a sanitized reference implementation. A SAP BTP Cloud Foundry application authenticated through AppRouter and XSUAA, resolved a remote endpoint through Destination Service, called an AKS-hosted Go probe API through Cloudflare Tunnel, and the AKS workload verified Key Vault data-plane access using Microsoft Entra Workload Identity. Terraform managed the platform lifecycle, and the disposable Azure lab was destroyed and rebuilt successfully.
 
 ## 3-Minute Version
 

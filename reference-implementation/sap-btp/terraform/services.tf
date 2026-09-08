@@ -8,26 +8,32 @@ data "cloudfoundry_space" "selected" {
 }
 
 resource "cloudfoundry_service_instance" "xsuaa" {
-  name         = "platform-probe-xsuaa"
-  type         = "managed"
-  space        = data.cloudfoundry_space.selected.id
-  service_plan = "application"
+  name  = "sap-btp-platform-probe-xsuaa"
+  space = data.cloudfoundry_space.selected.id
+  type  = "managed"
+
+  service_offering_name = "xsuaa"
+  service_plan_name     = "application"
 
   parameters = templatefile("${path.module}/xs-security.json", {
-    space = var.cf_space_name
+    approuter_route = "https://${var.approuter_host}.${var.cf_domain}/login/callback"
   })
 }
 
 resource "cloudfoundry_service_instance" "destination" {
-  name         = "platform-probe-destination"
-  type         = "managed"
-  space        = data.cloudfoundry_space.selected.id
-  service_plan = "lite"
+  name  = "sap-btp-platform-probe-destination"
+  space = data.cloudfoundry_space.selected.id
+  type  = "managed"
+
+  service_offering_name = "destination"
+  service_plan_name     = "lite"
 }
 
 resource "cloudfoundry_service_instance" "connectivity" {
-  name         = "platform-probe-connectivity"
-  type         = "managed"
-  space        = data.cloudfoundry_space.selected.id
-  service_plan = "lite"
+  name  = "sap-btp-platform-probe-connectivity"
+  space = data.cloudfoundry_space.selected.id
+  type  = "managed"
+
+  service_offering_name = "connectivity"
+  service_plan_name     = "lite"
 }

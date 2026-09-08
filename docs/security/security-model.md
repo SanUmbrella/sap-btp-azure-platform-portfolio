@@ -13,7 +13,7 @@ This public repository describes security-sensitive architecture without publish
 | AKS cluster boundary | Kubernetes schedules the probe API and cloudflared connectors. |
 | Kubernetes ServiceAccount boundary | Pod identity is represented by a ServiceAccount subject. |
 | Microsoft Entra identity boundary | Federated token exchange issues managed identity access. |
-| Azure Key Vault data-plane boundary | RBAC authorizes the secret-read operation. |
+| Azure Key Vault data-plane boundary | RBAC authorizes the secret-metadata/data-plane verification operation. |
 | Terraform state boundary | Remote state is protected outside Git. |
 | Secret-management boundary | Runtime material is resolved from external secret handling. |
 
