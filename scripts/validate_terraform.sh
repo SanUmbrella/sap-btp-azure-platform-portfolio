@@ -21,9 +21,29 @@ copy_module() {
   cp -R "$source_path" "$target_path"
 }
 
+strip_backend_blocks() {
+  local module_path="$1"
+
+  python3 - "$module_path" <<'PY'
+from pathlib import Path
+import re
+import sys
+
+module = Path(sys.argv[1])
+pattern = re.compile(r'\n\s*backend\s+"s3"\s+\{\s*\}\n', re.MULTILINE)
+
+for path in module.rglob("*.tf"):
+    text = path.read_text(encoding="utf-8")
+    updated = pattern.sub("\n", text)
+    if updated != text:
+        path.write_text(updated, encoding="utf-8")
+PY
+}
+
 validate_module() {
   local module_path="$1"
 
+  strip_backend_blocks "$module_path"
   printf '\n==> terraform validate %s\n' "$module_path"
   terraform -chdir="$module_path" init -backend=false -input=false >/dev/null
   terraform -chdir="$module_path" validate
