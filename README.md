@@ -10,8 +10,6 @@ This is a sanitized public portfolio representation of a working lab. No live cr
 
 The repository includes a [sanitized reference implementation](reference-implementation/README.md) with representative SAP BTP Node.js backend code, SAP AppRouter routing, XSUAA authorization model, Terraform configuration and AKS Workload Identity manifests. It is included as code-reading material, not as a turnkey deployable environment.
 
-![Platform architecture](assets/platform-architecture.svg)
-
 ## Platform Capabilities
 
 | Capability | How it was used | Status |
@@ -129,6 +127,8 @@ Cloudflare Tunnel solved application inbound connectivity. It does not remove ev
 
 The lab used a durable `bootstrap/` boundary for long-lived governance/platform resources and a disposable `lab/` boundary for AKS, ACR, Key Vault and workload identity resources. Terraform state was separated between SAP and Azure stacks and stored in a MinIO S3-compatible backend with credentials kept outside Git.
 
+Public CI does not access the private MinIO backend, Azure, SAP BTP, Cloudflare or Infisical. It validates source quality and Terraform provider schemas only, using temporary validation copies with backend configuration removed before `terraform init -backend=false`. Real infrastructure verification remains inside the authorized private lab environment.
+
 Plan-first workflow:
 
 ```mermaid
@@ -235,7 +235,7 @@ This repository demonstrates cross-cloud platform integration, infrastructure as
 - Evidence: [implementation status](docs/evidence/implementation-status.md), [end-to-end verification](docs/evidence/end-to-end-verification.md), [lifecycle verification](docs/evidence/lifecycle-verification.md)
 - Engineering: [Terraform adoption](docs/engineering/terraform-adoption.md), [provider limitations](docs/engineering/provider-limitations.md), [migration failure analysis](docs/engineering/migration-failure-analysis.md), [lifecycle workarounds](docs/engineering/lifecycle-workarounds.md), [upstream opportunities](docs/engineering/upstream-opportunities.md), [version context](docs/engineering/version-context.md)
 - Evolution: [manual CF push](docs/evolution/01-manual-cf-push.md), [Destination Service](docs/evolution/02-destination-service.md), [Terraform adoption](docs/evolution/03-terraform-adoption.md), [stable routing](docs/evolution/04-stable-routing.md)
-- Operations: [destroy/rebuild](docs/operations/destroy-rebuild.md), [verification runbook](docs/operations/verification-runbook.md), [architecture walkthrough](docs/operations/interview-demo.md)
+- Operations: [destroy/rebuild](docs/operations/destroy-rebuild.md), [public CI boundary](docs/operations/public-ci-boundary.md), [verification runbook](docs/operations/verification-runbook.md), [architecture walkthrough](docs/operations/interview-demo.md)
 - Security: [security model](docs/security/security-model.md), [public repository sanitization](docs/security/public-repository-sanitization.md)
 - Examples: [representative sanitized patterns](examples/README.md)
 

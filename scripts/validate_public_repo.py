@@ -13,7 +13,6 @@ import json
 import re
 import subprocess
 import sys
-import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
@@ -26,7 +25,6 @@ TEXT_EXTENSIONS = {
     ".yaml",
     ".yml",
     ".json",
-    ".svg",
     ".py",
     ".sh",
     ".go",
@@ -180,8 +178,6 @@ def parse_structured_file(path: Path) -> list[str]:
     try:
         if path.suffix.lower() == ".json":
             json.loads(path.read_text(encoding="utf-8"))
-        elif path.suffix.lower() == ".svg":
-            ET.parse(path)
     except Exception as exc:  # noqa: BLE001 - report parse failures uniformly.
         return [f"{path.relative_to(ROOT)}: parse failed: {exc}"]
     return []
